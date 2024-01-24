@@ -54,7 +54,7 @@ const getBet = (balance, lines) => {
     const bet = prompt('Enter the bet per line: ')
     const numberBet = parseFloat(bet)
 
-    if (isNaN(numberBet) || numberBet <= 0 || numberBet > (balance / lines)) {
+    if (isNaN(numberBet) || numberBet <= 0 || numberBet > balance / lines) {
       console.log('Ivalid bet, try again.')
     } else {
       return numberBet
@@ -65,11 +65,28 @@ const getBet = (balance, lines) => {
 const spin = () => {
   const symbols = []
   for (const [symbol, count] of Object.entries(SYMBOLS_COUNT)) {
-    console.log(symbol, count);
+    for (let i = 0; i < count; i++) {
+      symbols.push(symbol)
+    }
   }
+
+  const reels = []
+  for (let i = 0; i < COLS; i++) {
+    reels.push([])
+    const reelSymbols = [...symbols]
+    for (let j = 0; j < ROWS; j++) {
+      const randomIndex = Math.floor(Math.random() * reelSymbols.length)
+      const selectedSymbol = reelSymbols[randomIndex]
+      reels[i].push(selectedSymbol)
+      reelSymbols.splice(randomIndex, 1)
+    }
+  }
+
+  return reels
 }
 
-spin();
+const reels = spin()
+console.log(reels)
 let balance = deposit()
 const numberOfLines = getNumberOfLines()
 const bet = getBet(balance, numberOfLines)
